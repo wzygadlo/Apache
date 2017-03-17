@@ -1,0 +1,34 @@
+Settings for Centos7 and Apache2.4
+
+1. Generate Certificate command for each domain and subdomain      
+
+    letsencrypt certonly --webroot -w /var/www/example/ -d example.com --renew-by-default      
+    letsencrypt certonly --webroot -w /var/www/example2/ -d example2.com --renew-by-default 
+
+
+ 2. Important to add these lines to website.conf for example example > /etc/httpd/site-enables/example.conf      
+
+Alias /.well-known/acme-challenge/ /var/www/example/.well-known/acme-challenge/
+        <Directory "/var/www/example/.well-known/acme-challenge/">
+                Options None
+                ForceType text/plain
+                Require all granted
+                RedirectMatch 404 "^(?!/\.well-known/acme-challenge/[\w-]{43}$)"
+        </Directory>
+
+Example:
+
+<VirtualHost *:80>
+        ServerAdmin admin@example.com
+        ServerName example.com
+        DocumentRoot "/var/www/example"
+        Alias /.well-known/acme-challenge/ /var/www/example/.well-known/acme-challenge/
+        <Directory "/var/www/example/.well-known/acme-challenge/">
+                Options None
+                ForceType text/plain
+                Require all granted
+                RedirectMatch 404 "^(?!/\.well-known/acme-challenge/[\w-]{43}$)"
+        </Directory>
+</VirtualHost>asd
+
+
